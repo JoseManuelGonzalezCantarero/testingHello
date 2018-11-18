@@ -2,3 +2,8 @@ AppBundle\Entity\User:
     user_{1..3}:
         username: user+<current()>
         plainPassword: hello
+        roles: ['ROLE_PAGE_<current()>']
+    admin:
+        username: admin
+        plainPassword: admin
+        roles: ['ROLE_ADMIN']

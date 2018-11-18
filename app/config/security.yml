@@ -30,3 +30,8 @@ security:
             logout:
                 path: 'security_logout'
                 target: 'security_login'
+
+    access_control:
+        - { path: ^/page1, roles: [ROLE_PAGE_1, ROLE_ADMIN] }
+        - { path: ^/page2, roles: [ROLE_PAGE_2, ROLE_ADMIN] }
+        - { path: ^/page3, roles: [ROLE_PAGE_3, ROLE_ADMIN] }

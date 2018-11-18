@@ -1,0 +1,6 @@
+{% extends 'base.html.twig' %}
+{% block title %}Page {{ page }}{% endblock %}
+{% block body %}
+    <h1>Hello {{ app.user }}</h1>
+    <a href="{{ path('security_logout') }}">Logout</a>
+{% endblock %}

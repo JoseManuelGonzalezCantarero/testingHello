@@ -5,10 +5,9 @@ namespace AppBundle\Security;
 use AppBundle\Form\LoginForm;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
@@ -19,12 +18,18 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     private $formFactory;
     private $router;
     private $em;
+    private $passwordEncoder;
 
-    public function __construct(FormFactoryInterface $formFactory, EntityManagerInterface $em, RouterInterface $router)
+    public function __construct(
+        FormFactoryInterface $formFactory,
+        EntityManagerInterface $em,
+        RouterInterface $router,
+        UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->formFactory = $formFactory;
         $this->router = $router;
         $this->em = $em;
+        $this->passwordEncoder = $passwordEncoder;
     }
 
     public function getCredentials(Request $request)
@@ -60,7 +65,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     {
         $password = $credentials['_password'];
 
-        if ($password === 'hola') {
+        if ($this->passwordEncoder->isPasswordValid($user, $password)) {
             return true;
         }
 
@@ -72,8 +77,8 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         return $this->router->generate('security_login');
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    protected function getDefaultSuccessRedirectUrl()
     {
-        return new RedirectResponse($this->router->generate('home_route'));
+        return $this->router->generate('home_route');
     }
 }

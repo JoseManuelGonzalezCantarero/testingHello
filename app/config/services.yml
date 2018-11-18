@@ -36,3 +36,6 @@ services:
     AppBundle\DataFixtures\:
         resource: '../../src/AppBundle/DataFixtures'
         tags: ['doctrine.fixture.orm']
+
+    AppBundle\Doctrine\HashPasswordListener:
+        tags: ['doctrine.event_subscriber']

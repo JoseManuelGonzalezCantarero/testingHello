@@ -21,7 +21,7 @@ class UserController extends Controller
         $roles = [];
         $roles[] = $request->get('roles');
 
-        if (empty($username) || empty($plainPassword) || empty($roles)) {
+        if (empty($username) || empty($plainPassword) || empty($roles[0])) {
             return new JsonResponse('Null values are not allowed', Response::HTTP_NOT_ACCEPTABLE);
         }
 
@@ -57,5 +57,42 @@ class UserController extends Controller
         ];
 
         return new JsonResponse($data, Response::HTTP_OK);
+    }
+
+    /**
+     * @Route("/api/user/{name}", methods={"PUT"})
+     */
+    public function updateAction($name, Request $request)
+    {
+        $user = $this->getDoctrine()->getRepository('AppBundle:User')
+            ->findOneBy(['username' => $name]);
+
+        if (!$user)
+        {
+            return new JsonResponse('No user found with username '. $name
+                , Response::HTTP_NOT_FOUND);
+        }
+
+        $username = $request->get('username');
+        $plainPassword = $request->get('plainPassword');
+        $roles[] = $request->get('roles');
+
+        if (!empty($username)) {
+            $user->setUsername($username);
+        }
+
+        if (!empty($plainPassword)) {
+            $user->setPlainPassword($plainPassword);
+        }
+
+        if (!empty($roles[0])) {
+            $user->setRoles($roles);
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($user);
+        $em->flush();
+
+        return new JsonResponse('User updated', Response::HTTP_OK);
     }
 }

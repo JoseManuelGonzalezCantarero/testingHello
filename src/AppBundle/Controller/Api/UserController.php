@@ -60,7 +60,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/api/user/{name}", methods={"PUT"})
+     * @Route("/api/user/{name}", methods={"PUT", "PATCH"})
      */
     public function updateAction($name, Request $request)
     {
@@ -94,5 +94,23 @@ class UserController extends Controller
         $em->flush();
 
         return new JsonResponse('User updated', Response::HTTP_OK);
+    }
+
+    /**
+     * @Route("/api/user/{username}", methods={"DELETE"})
+     */
+    public function deleteAction($username)
+    {
+        $user = $this->getDoctrine()->getRepository('AppBundle:User')
+            ->findOneBy(['username' => $username]);
+
+        if ($user)
+        {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($user);
+            $em->flush();
+        }
+
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 }

@@ -22,11 +22,9 @@ class UserController extends Controller
         $roles[] = $request->get('roles');
 
         if (empty($username) || empty($plainPassword) || empty($roles)) {
-            $response = new JsonResponse('Null values are not allowed', Response::HTTP_NOT_ACCEPTABLE);
-            $response->headers->set('Content-Type', 'application/problem+json');
-
-            return $response;
+            return new JsonResponse('Null values are not allowed', Response::HTTP_NOT_ACCEPTABLE);
         }
+
         $user = New User();
         $user->setUsername($username);
         $user->setPlainPassword($plainPassword);
@@ -36,9 +34,28 @@ class UserController extends Controller
         $em->persist($user);
         $em->flush();
 
-        $response = new JsonResponse('User created', Response::HTTP_CREATED);
-        $response->headers->set('Content-Type', 'application/json');
+        return new JsonResponse('User created', Response::HTTP_CREATED);
+    }
 
-        return $response;
+    /**
+     * @Route("/api/user/{username}", methods={"GET"})
+     */
+    public function showAction($username)
+    {
+        $user = $this->getDoctrine()->getRepository('AppBundle:User')
+            ->findOneBy(['username' => $username]);
+
+        if (!$user)
+        {
+            return new JsonResponse('No user found with username '. $username
+            , Response::HTTP_NOT_FOUND);
+        }
+
+        $data = [
+            'username' => $user->getUsername(),
+            'roles' => $user->getRoles()
+        ];
+
+        return new JsonResponse($data, Response::HTTP_OK);
     }
 }

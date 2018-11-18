@@ -31,7 +31,15 @@ security:
                 path: 'security_logout'
                 target: 'security_login'
 
+            logout_on_user_change: true
+        api_secured:
+            pattern: ^/api/
+            stateless: true
+            http_basic: ~
+
     access_control:
         - { path: ^/page1, roles: [ROLE_PAGE_1, ROLE_ADMIN] }
         - { path: ^/page2, roles: [ROLE_PAGE_2, ROLE_ADMIN] }
         - { path: ^/page3, roles: [ROLE_PAGE_3, ROLE_ADMIN] }
+        - { path: ^/api/user, roles: [ROLE_PAGE_1, ROLE_PAGE_2, ROLE_PAGE_3, ROLE_ADMIN], methods: GET }
+        - { path: ^/api/user, roles: [ROLE_ADMIN], methods: [POST, PUT, DELETE] }

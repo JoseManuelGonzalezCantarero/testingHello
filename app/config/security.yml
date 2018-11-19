@@ -15,6 +15,11 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
+        api_secured:
+            pattern: ^/api/
+            stateless: true
+            http_basic: ~
+
         main:
             anonymous: ~
             # activate different ways to authenticate
@@ -32,10 +37,6 @@ security:
                 target: 'security_login'
 
             logout_on_user_change: true
-        api_secured:
-            pattern: ^/api/
-            stateless: true
-            http_basic: ~
 
     access_control:
         - { path: ^/page1, roles: [ROLE_PAGE_1, ROLE_ADMIN] }

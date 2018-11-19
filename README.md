@@ -35,3 +35,18 @@ Ejemplos de endpoints para la api:
 4. `http://localhost:8000/api/user/Manu`
 (Éste endpoint, usando el método GET, nos devolvería la información del usuario Manu)
 
+#tests unitarios
+Nos aseguramos de tener creada la base de datos de test:
+```bash
+bin/console doctrine:database:create --env=test
+```
+Lanzamos las migraciones en el entorno de test para crear el esquema:
+```bash
+bin/console doctrine:migrations:migrate --env=test
+```
+
+Para lanzar los tests unitarios:
+```bash
+cd Ruta del Proyecto
+./vendor/bin/simple-phpunit
+```
